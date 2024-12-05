@@ -1,19 +1,16 @@
-import requests
-import json
+import http.client, urllib.parse
 
-# Substitua pela sua chave da API
-api_key = 'GET https://api.stockdata.org/v1/data/intraday/adjusted HTTP/1.1'
+conn = http.client.HTTPSConnection('api.stockdata.org')
 
-# A URL da API para obter dados (aqui estamos usando um exemplo de dados históricos)
-url = f'https://api.stockdata.org/v1/data/quote?symbols=AAPL&api_token={api_key}'
+params = urllib.parse.urlencode({
+    'api_token': 'ujmUaTYeAdRGe5MyEPbIrvF4mevABivctOt1CrgU',
+    'symbols': 'AAPL,TSLA',
+    'limit': 50,
+    })
 
-# Fazendo a requisição GET para a API
-response = requests.get(url)
+conn.request('GET', '/v1/news/all?{}'.format(params))
 
-# Verificando se a requisição foi bem-sucedida
-if response.status_code == 200:
-    # Convertendo a resposta para um formato JSON
-    data = response.json()
-    print(json.dumps(data, indent=4))  # Exibindo os dados de maneira formatada
-else:
-    print(f'Erro ao obter dados: {response.status_code}')
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode('utf-8'))
